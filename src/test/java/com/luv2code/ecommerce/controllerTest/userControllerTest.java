@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -42,6 +43,27 @@ public class userControllerTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("John"))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Doe"));
         }
+    @Test
+    public void testGetUserById() throws Exception {
+        // Prepare mock data
+
+        User user = new User();
+        user.setId(1L);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+
+        // Mock the service method to return the mock data
+        when(userService.getUserById(1L)).thenReturn(user);
+
+        // Perform the request
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                // Optionally, you can verify the content of the response
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("John"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Doe"));
+    }
 
 
 
