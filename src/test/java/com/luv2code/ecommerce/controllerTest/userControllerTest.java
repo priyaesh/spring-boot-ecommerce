@@ -65,6 +65,41 @@ public class userControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Doe"));
     }
 
+    @Test
+    public void testGetAllUsers() throws Exception {
+        // Prepare mock data
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setFirstName("John");
+        user1.setLastName("Doe");
+
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setFirstName("Jane");
+        user2.setLastName("Smith");
+
+        //User user1 = new User(1L, "John", "Doe");
+        //User user2 = new User(2L, "Jane", "Smith");
+        List<User> userList = Arrays.asList(user1, user2);
+
+
+        // Mock the service method to return the mock data
+        when(userService.getAllUsers()).thenReturn(userList);
+        System.out.println(userList);
+
+        // Perform the request
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                // Optionally, you can verify the content of the response
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(userList.size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstName").value("John"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastName").value("Doe"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].firstName").value("Jane"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].lastName").value("Smith"));
+    }
 
 
         // Helper method to convert object to JSON string
